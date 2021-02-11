@@ -1,51 +1,52 @@
 <?php
-
+//var_dumpで変数の中身を見る関数
 function dd($var){
   var_dump($var);
   exit();
 }
-
+//HTTPヘッダーを送信する関数。
 function redirect_to($url){
   header('Location: ' . $url);
   exit;
 }
-
+//$_GETがnullでないなら$_GETを返す関数。
 function get_get($name){
   if(isset($_GET[$name]) === true){
     return $_GET[$name];
   };
   return '';
 }
-
+//$_POSTがnullでないなら$_POSTを返す関数
 function get_post($name){
   if(isset($_POST[$name]) === true){
     return $_POST[$name];
   };
   return '';
 }
-
+//$_FILESがnullでないなら$_FILESを返す関数
 function get_file($name){
   if(isset($_FILES[$name]) === true){
     return $_FILES[$name];
   };
   return array();
 }
-
+//$_SESSIONがnullでないなら$_SESSIONを返す関数
 function get_session($name){
   if(isset($_SESSION[$name]) === true){
     return $_SESSION[$name];
   };
   return '';
 }
-
+//$_SESSIONの中身を$valueに入れる関数
 function set_session($name, $value){
   $_SESSION[$name] = $value;
 }
-
+//$_SESSIONの中身を$errorに入れる関数
 function set_error($error){
   $_SESSION['__errors'][] = $error;
 }
-
+/*$errorsをget_session関数と定義して、もし$errorsが空なら空の配列を返す
+そしてからでないなら'_errors'の中身を配列に入れて返す関数*/ 
 function get_errors(){
   $errors = get_session('__errors');
   if($errors === ''){
@@ -54,7 +55,7 @@ function get_errors(){
   set_session('__errors',  array());
   return $errors;
 }
-
+//$_SESSIONがnullではなくてand数が0ではない結果を返す関数
 function has_error(){
   return isset($_SESSION['__errors']) && count($_SESSION['__errors']) !== 0;
 }
@@ -136,4 +137,21 @@ function is_valid_upload_image($image){
 }
 function h($str){
   return htmlspecialchars ($str ,ENT_QUOTES,'UTF-8');
+}
+// トークンの生成
+function get_csrf_token(){
+  // get_random_string()はユーザー定義関数。
+  $token = get_random_string(30);
+  // set_session()はユーザー定義関数。
+  set_session('csrf_token', $token);
+  return $token;
+}
+
+// トークンのチェック
+function is_valid_csrf_token($token){
+  if($token === '') {
+    return false;
+  }
+  // get_session()はユーザー定義関数
+  return $token === get_session('csrf_token');
 }
