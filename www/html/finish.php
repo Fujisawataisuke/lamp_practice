@@ -26,5 +26,13 @@ if(purchase_carts($db, $carts) === false){
 } 
 
 $total_price = sum_carts($carts);
+
+//ここから編集していく。cart.phpで作成した関数をトランザクション処理を行いながら書き込んでいく。
+if(regist_histores_transaction($db, $carts, $user['user_id'], $total_price) === false){
+  set_error('履歴が登録出来ませんでした。');
+  redirect_to(CART_URL);
+}
+
 $token = get_csrf_token();
 include_once '../view/finish_view.php';
+
