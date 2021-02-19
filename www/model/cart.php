@@ -158,4 +158,47 @@ function validate_cart_purchase($carts){
   }
   return true;
 }
-
+//ここから編集する。購入履歴テーブルへのinsert文
+function insert_histores($db,$user_id,$total){
+  $sql = "
+    INSERT INTO
+    histories(
+        user_id,
+        total
+      )
+    VALUES(:user_id, :total)
+  ";
+  $array=array(':user_id'=>$user_id,'total'=>$total);
+  return execute_query($db, $sql,$array);
+}
+function insert_detail($db,$purchase_id,$item_id,$amount,$price){
+  $sql = "
+    INSERT INTO
+    detail(
+        purchase_id,
+        item_id,
+        amount,
+        price
+      )
+    VALUES(:purchase_id,:item_id,:amount, :price)
+  ";
+  $array=array(':purchase_id'=>$purchase_id,'item_id'=>$item_id,'amount'=>$amount,'price'=>$price);
+  return execute_query($db, $sql,$array);
+}
+function regist_histores_transaction($db,$carts, $user_id, $total){
+  $db->beginTransaction();
+  if(insert_histores($db, $user_id, $total)===false) {
+    $db->rollback();
+    return false;
+  } 
+  
+  $purchase_id=$db->lastInsertId();
+  foreach($carts as $cart){
+    if(insert_detail($db,$purchase_id,$cart['item_id'],$cart['amount'],$cart['price'])===false){
+      $db->rollback();
+      return false;
+    }
+  }
+ $db->commit();
+ return true;
+}
