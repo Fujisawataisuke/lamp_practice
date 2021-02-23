@@ -13,6 +13,7 @@ $token=get_post('token');
 if(is_valid_csrf_token($token)===false){
   redirect_to(LOGIN_URL);
 }
+//$_SESSION['csrf_token']を削除する。
 unset($_SESSION['csrf_token']);
 $db = get_db_connect();
 
