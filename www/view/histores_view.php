@@ -16,21 +16,31 @@
   <div class="container">
     <?php include VIEW_PATH . 'templates/messages.php'; ?>
 
-    <?php if(!empty($histores)){ ?>
+    <?php if(!empty($histories)){ ?>
       <table class="table table-bordered">
         <thead class="thead-light">
           <tr>
-            <th>商品番号</th>
-            <th>購入時間</th>
+            <th>注文番号</th>
+            <th>購入日</th>
             <th>合計金額</th>
+            <th>購入詳細</th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach($histores as $history){ ?>
+          <?php foreach($histories as $history){ ?>
           <tr>
-            <td><img src=<?php print(h($history['purchase_id']));?>></td>
+            <td><?php print(h($history['purchase_id']));?></td>
             <td><?php print(h($history['created'])); ?></td>
-            <td><?php print(h($history['total'])); ?>円</td>
+            <td><?php print(h(number_format($history['total']))); ?>円</td>
+            <td>
+            <form method="post" action="detail.php">
+              <input type="submit" value="購入詳細表示">
+              <input type="hidden" name="purchase_id" value="<?php print h($history['purchase_id']); ?>">
+              <input type="hidden" name="token" value="<?php print h($token);?>">
+              <input type="hidden" name="created" value="<?php print h($history['created']);?>">
+              <input type="hidden" name="total" value="<?php print h($history['total']);?>">
+            </form>
+          </td>
           </tr>
           <?php } ?>
         </tbody>
