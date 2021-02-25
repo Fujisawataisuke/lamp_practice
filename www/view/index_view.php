@@ -47,6 +47,24 @@
       </div>
     </div>
   </div>
-  
+  </table>
+      <table class="table table-bordered">
+        <thead class="thead-light">
+        <tr>
+          <th>順位</th>
+          <th>商品名</th>
+          <th>購入数</th>
+        </tr>
+      </thead>
+      <tbody>
+      <?php foreach($ranks as $rank){ ?>
+        <tr>
+        　<td>第<?php print(h($count++));?>位</td>
+          <td><?php print(h($rank['name'])); ?></td>
+          <td><?php print(h($rank['sum_amount'])); ?></td>
+        </tr>
+      <?php } ?>
+      </tbody>
+    </table>
 </body>
 </html>
